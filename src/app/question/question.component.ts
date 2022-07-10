@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { resetFakeAsyncZone } from '@angular/core/testing';
-import { interval, Subscriber, timeout} from 'rxjs';
+import { count, delay, interval, Subscriber, timeout} from 'rxjs';
 import { __values } from 'tslib';
 import { QuestionService } from '../service/question.service';
 
@@ -21,12 +21,19 @@ export class QuestionComponent implements OnInit {
   interval$:any;
   progress:string="0";
   isQuizComplete : boolean = false;
-  constructor(private questionService : QuestionService) { }
+  constructor(private questionService : QuestionService) {
+    for (let sec=60; sec>0; sec--){
+      setTimeout(()=>{
+        this.counter = sec;
+        console.log("Time:", sec);
+      }, 1000); 
+    }
+  }
 
   ngOnInit(): void {
     this.name = localStorage.getItem("name")!;
     this.getAllQuestions();
-    this.startCounter();
+    //this.startCounter();
   }
 
   getAllQuestions(){
@@ -66,7 +73,7 @@ export class QuestionComponent implements OnInit {
       this.points-=10;
     }
   }
-  startCounter(){
+  /*startCounter(){
     this.interval$ = interval(1000);
     subscribe(val=>{
       this.counter--;
@@ -79,13 +86,19 @@ export class QuestionComponent implements OnInit {
     setTimeout(() =>{
       this.interval$.unsubscribe()
     }, (600000));
+  }*/
+  async startCounter(){
+    for (let sec=60; sec>0; sec--){
+      await delay(1000);
+      this.counter = sec;
+      console.log("Time:", sec);
+    }
   }
   stopCounter(){
     this.interval$.unsubscribe();
     this.counter=0;
   }
   resetCounter(){
-    this.startCounter();
     this.counter=60;
     this.startCounter();
   }
